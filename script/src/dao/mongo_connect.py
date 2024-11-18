@@ -16,7 +16,7 @@ def connected_bd():
 
 def insert_bd(new_interaction):
     db = connected_bd()
-    collection = db["chatbot"]
+    collection = db["chatbot2"]
     if collection is None:
         st.error("Não foi possível conectar ao banco de dados.")
         return
