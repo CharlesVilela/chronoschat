@@ -108,6 +108,7 @@ def main():
         with st.spinner(spinner_message):
             # Formatar a data e hora sem caracteres inválidos
             timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            timestamp_start = datetime.now()
             prompt = re.sub(r"[^\w\sÀ-ÿ]", "", prompt)
             prompt = interaction.accent_remover(prompt)
 
@@ -176,7 +177,9 @@ def main():
                 if st.session_state['personality_exist']:
                     response = api.send_input_gemini_api(prompt)
                 else:
-                    response = f"Parece que nossa máquina do tempo ainda não conseguiu calibrar as coordenadas para visitar {st.session_state['personality_name']}. Estamos trabalhando para ajustar nossos mecanismos e em breve esperamos tornar essa viagem possível! Enquanto isso, que tal explorar outras eras ou conversar com outra figura histórica? Como: {st.session_state['random_personality']}. Nossa linha do tempo tem muitos destinos fascinantes à sua espera!"
+                    if 'personality_name' in st.session_state and 'random_personality' in st.session_state:
+                        random_personality = ', '.join(st.session_state['random_personality']) if st.session_state['random_personality'] else "nenhuma outra sugestão"
+                    response = f"Parece que nossa máquina do tempo ainda não conseguiu calibrar as coordenadas para visitar {st.session_state['personality_name']}. Estamos trabalhando para ajustar nossos mecanismos e em breve esperamos tornar essa viagem possível! Enquanto isso, que tal explorar outras eras ou conversar com outra figura histórica? Como: {random_personality}. Nossa linha do tempo tem muitos destinos fascinantes à sua espera!"
                 
 
             # Checa se a conversão para áudio está ativada
@@ -202,8 +205,12 @@ def main():
                     }],
                     "avatar": st.session_state['current_avatar']
                 })
+            
+            timestamp_end = datetime.now()
+            delta = timestamp_end - timestamp_start
+            time_in_seconds = delta.total_seconds()
 
-            interaction.log_interaction(prompt, response, isQuestionAudio, isResponseAudio)
+            interaction.log_interaction(prompt, response, isQuestionAudio, isResponseAudio, time_in_seconds)
 
     #  # Exibir todas as interações na tela, em pares de pergunta e resposta
     # for message in st.session_state.chatbot_responses:

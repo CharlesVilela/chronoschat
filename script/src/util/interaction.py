@@ -13,10 +13,10 @@ def accent_remover(text):
     )
 
 # Função para registrar interações
-def log_interaction(user_question, bot_response, isQuestionAudio, isResponseAudio):
+def log_interaction(user_question, bot_response, isQuestionAudio, isResponseAudio, time_in_seconds):
     # Crie uma instância da classe Interaction
     new_interaction = interaction_entity.Interaction(
-        timestamp=get_time_spent(),
+        timestamp=time_in_seconds,
         user_id=st.session_state['user_id'],
         user_question=user_question,
         bot_response=bot_response,
